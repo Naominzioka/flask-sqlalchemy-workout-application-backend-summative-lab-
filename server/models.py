@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
 from sqlalchemy import MetaData
+from sqlalchemy.ext.associationproxy import association_proxy
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s"
@@ -18,8 +19,14 @@ class Exercise(db.Model):
     category = db.Column(db.String, nullable = False)
     equipment_needed = db.Column(db.Boolean)
     
-    workout_exercise = db.relationship('WorkoutExercise', back_populates = 'exercise')
-    workouts = db.relationship('Workout', back_populates = 'exercises', secondary = 'workout_exercises')
+    workout_exercises = db.relationship('WorkoutExercise', back_populates='exercise')
+    """association proxy is to access workouts directly from exercise,
+    and create WorkoutExercise instances when adding workouts to an exercise
+    we don't have to manually create a WorkoutExercise instance if we want to add a workout to an exercise, 
+    we can just add the workout to the workouts association proxy and it will automatically create the WorkoutExercise instance for us.
+    The creator function is a lambda function that takes a workout as an argument 
+    and returns a new WorkoutExercise instance with the workout set to the workout argument"""
+    workouts = association_proxy('workout_exercises', 'workout', creator=lambda workout: WorkoutExercise(workout=workout))
     
     #validators
     valid_categories = ['Pilates', 'Yoga', 'Aerobics', 'Cardio', 'Bodybuilding']
@@ -46,12 +53,17 @@ class Workout(db.Model):
     __tablename__ = 'workouts'
     
     id = db.Column(db.Integer, primary_key = True)
-    date = db.Column(db.DateTime)
+    date = db.Column(db.Date)
     duration_minutes = db.Column(db.Integer)
     notes = db.Column(db.Text)
     
-    workout_exercise = db.relationship('WorkoutExercise', back_populates = 'workout')
-    exercises = db.relationship('Exercise', back_populates = 'workouts', secondary='workout_exercises')
+    workout_exercises = db.relationship('WorkoutExercise', back_populates='workout')
+    """association proxy is to access exercises directly from workout,
+    and create WorkoutExercise instances when adding exercises to a workout
+    in simple terms, this allows us to add exercises to a workout without having to manually create a WorkoutExercise instance each time.
+    The creator function is a lambda function that takes an exercise as an argument
+    and returns a new WorkoutExercise instance with the exercise set to the exercise argument"""
+    exercises = association_proxy('workout_exercises', 'exercise', creator=lambda exercise: WorkoutExercise(exercise=exercise))
     
     @validates('duration_minutes', 'notes')
     def validate_duration(self, key, value):
@@ -92,8 +104,8 @@ class WorkoutExercise(db.Model):
             raise ValueError("Duration must be a positive number")
         return value
     
-    workout = db.relationship('Workout', back_populates = 'workout_exercise')
-    exercise = db.relationship('Exercise', back_populates = 'workout_exercise')
+    workout = db.relationship('Workout', back_populates='workout_exercises')
+    exercise = db.relationship('Exercise', back_populates='workout_exercises')
     
     def __repr__(self):
         return f'<WorkoutExercise {self.id}, {self.reps}, {self.sets}, {self.duration_seconds}>'
