@@ -1,4 +1,4 @@
-from flask import Flask, make_response, request
+from flask import Flask, make_response
 from flask_migrate import Migrate
 
 from models import *
