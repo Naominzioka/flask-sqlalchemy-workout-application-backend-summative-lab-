@@ -78,22 +78,56 @@ def delete_a_workout(id):
 #get all exercises
 @app.route('/exercises', methods=['GET'])
 def get_exercises():
-    return make_response({"message": "List of all exercises"}, 200)
+    exercises_list = Exercise.query.all()
+    if not exercises_list:
+        return make_response({"message": "No exercises found"}, 404)
+    response_body = ExerciseSchema(many=True).dump(exercises_list)
+    return make_response(response_body), 200
 
 #get exercise by id
 @app.route('/exercises/<int:id>', methods=["GET"])
 def get_exercise_id(id):
-    return make_response({"message": f"Show exercise {id} and associated workouts"}, 200)
+    exercise = Exercise.query.filter(Exercise.id==id).first()
+    if not exercise:
+        return make_response({"message": "Exercise id not found"}, 404)
+    response_body = ExerciseSchema().dump(exercise)
+    return make_response(response_body, 200)
 
 #add a new exercise
 @app.route('/exercises', methods=['POST'])
 def create_exercise():
-    return make_response({"message": "Create an exercise"}, 201)
+    if not request.is_json:
+        return make_response({"message": "Request body must be JSON"}, 400)
+
+    data = request.get_json()
+
+    try:
+        validated_exercise = ExerciseSchema().load(data)
+    except ValidationError as e:
+        return make_response({"errors": e.messages}, 400)
+
+    try:
+        new_exercise = Exercise(
+            name = validated_exercise.get('name'),
+            category = validated_exercise.get('category'),
+            equipment_needed = validated_exercise.get('equipment_needed')
+        )
+        db.session.add(new_exercise)
+        db.session.commit()
+    except ValueError as e:
+        return make_response({"message": str(e)}, 400)
+    response_body = ExerciseSchema().dump(new_exercise)
+    return make_response(response_body, 201)
 
 #delete an exercise
 @app.route('/exercises/<int:id>', methods=['DELETE'])
 def delete_exercise(id):
-    return make_response({"message": f"Exercise {id} successfully deleted"}, 204)
+    exercise_to_delete = Exercise.query.filter(Exercise.id==id).first()
+    if not exercise_to_delete:
+        return make_response({"message": "Exercise id not found"}, 404)
+    db.session.delete(exercise_to_delete)
+    db.session.commit()
+    return make_response('', 204)
 
 #add an exercise to a workout
 @app.route('/workouts/<int:workout_id>/exercises/<int:exercise_id>/workout_exercises', methods=['POST'])
