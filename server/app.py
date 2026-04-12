@@ -45,7 +45,7 @@ def create_workout():
     data = request.get_json()
 
     try:
-        validated_data = WorkoutSchema().load(data)
+        validated_data = WorkoutSchema().load(data)  # deserialize incoming data into a Python dictionary and validate it.
     except ValidationError as e:
         return make_response({"errors": e.messages}, 400)
 
@@ -60,7 +60,7 @@ def create_workout():
     except ValueError as e:
         return make_response({"message": str(e)}, 400)
 
-    response_body = WorkoutSchema().dump(new_workout)
+    response_body = WorkoutSchema().dump(new_workout) # serialize the new workout object into a JSON-compatible format for the response.
     return make_response(response_body, 201)
 
 #delete a workout
@@ -82,7 +82,7 @@ def get_exercises():
     if not exercises_list:
         return make_response({"message": "No exercises found"}, 404)
     response_body = ExerciseSchema(many=True).dump(exercises_list)
-    return make_response(response_body), 200
+    return make_response(response_body, 200)
 
 #get exercise by id
 @app.route('/exercises/<int:id>', methods=["GET"])
