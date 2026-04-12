@@ -26,11 +26,11 @@ with app.app_context():
     # add workouts that match the exercises above
     """duration_minutes is the total time spent on the workout
     it is the total time spent in the gym or doing the workout"""
-    w1 = Workout(id=1, date=date(2024, 6, 1), duration_minutes=30, notes='Felt great!')
-    w2 = Workout(id=2, date=date(2024, 6, 1), duration_minutes=45, notes='Challenging but rewarding!')
-    w3 = Workout(id=3, date=date(2024, 6, 2), duration_minutes=60, notes='Relaxing and refreshing!')
-    w4 = Workout(id=4, date=date(2024, 6, 2), duration_minutes=40, notes='Intense but effective!')
-    w5 = Workout(id=5, date=date(2024, 6, 3), duration_minutes=50, notes='Strengthening and toning!')
+    w1 = Workout(id=1, date=date(2026, 4, 1), duration_minutes=30, notes='Felt great!')
+    w2 = Workout(id=2, date=date(2026, 4, 1), duration_minutes=45, notes='Challenging but rewarding!')
+    w3 = Workout(id=3, date=date(2026, 4, 2), duration_minutes=60, notes='Relaxing and refreshing!')
+    w4 = Workout(id=4, date=date(2026, 4, 2), duration_minutes=40, notes='Intense but effective!')
+    w5 = Workout(id=5, date=date(2026, 4, 3), duration_minutes=50, notes='Strengthening and toning!')
    
     db.session.add_all([w1, w2, w3, w4, w5])
     db.session.commit()
