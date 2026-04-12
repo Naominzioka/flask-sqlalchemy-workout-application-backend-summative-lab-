@@ -40,12 +40,12 @@ with app.app_context():
     """duration_seconds is the time spent on one specific exercise inside that workout
     it is broken down into seconds spent on each exercise on that workout"""
     workout_exercises = [
-        WorkoutExercise(workout_id=1, exercise_id=1, reps=15, sets=3, duration_seconds=None),
-        WorkoutExercise(workout_id=1, exercise_id=5, reps=20, sets=3, duration_seconds=None),
-        WorkoutExercise(workout_id=2, exercise_id=2, reps=None, sets=None, duration_seconds=1800),
-        WorkoutExercise(workout_id=3, exercise_id=3, reps=None, sets=None, duration_seconds=2400),
-        WorkoutExercise(workout_id=4, exercise_id=4, reps=None, sets=None, duration_seconds=2100),
-        WorkoutExercise(workout_id=5, exercise_id=1, reps=12, sets=4, duration_seconds=None),
+        WorkoutExercise(workout_id=1, exercise_id=1, reps=15, sets=3, duration_seconds=2200),
+        WorkoutExercise(workout_id=1, exercise_id=5, reps=20, sets=3, duration_seconds=1500),
+        WorkoutExercise(workout_id=2, exercise_id=2, reps=10, sets=5, duration_seconds=1800),
+        WorkoutExercise(workout_id=3, exercise_id=3, reps=8, sets=4, duration_seconds=2400),
+        WorkoutExercise(workout_id=4, exercise_id=4, reps=10, sets=6, duration_seconds=2100),
+        WorkoutExercise(workout_id=5, exercise_id=1, reps=12, sets=4, duration_seconds=2000),
     ]
 
     db.session.add_all(workout_exercises)

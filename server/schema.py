@@ -34,8 +34,6 @@ class WorkoutExerciseSchema(Schema):
     reps = fields.Int(allow_none=True)
     sets = fields.Int(allow_none=True)
     duration_seconds = fields.Int(allow_none=True)
-    workout_id = fields.Int(required=True)
-    exercise_id = fields.Int(required=True)
     
     @validates_schema
     def validate_schema(self, data, **kwargs):
