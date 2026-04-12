@@ -68,7 +68,16 @@ python seed.py
 
 ## Run Instructions
 
-Start the Flask development server from the `server` directory:
+Start the Flask development server from the `server` directory.
+
+Option 1 (recommended):
+
+```bash
+export FLASK_APP=app.py
+flask run --port 5555
+```
+
+Option 2:
 
 ```bash
 python app.py
@@ -151,14 +160,32 @@ exercise.workout_exercises
 
 Using Flask shell is helpful when you want to inspect data quickly without sending HTTP requests.
 
-## Example Endpoints
+## API Endpoints
 
-- `GET /`
-- `GET /workouts`
-- `POST /workouts`
-- `GET /exercises`
-- `POST /exercises`
-- `POST /workouts/<workout_id>/exercises/<exercise_id>/workout_exercises`
+- `GET /` 
+	Returns a welcome message for the API.
+- `GET /workouts` 
+	Returns all workouts.
+- `GET /workouts/<id>` 
+	Returns a single workout by ID.
+- `POST /workouts` 
+	Creates a new workout.
+- `DELETE /workouts/<id>` 
+	Deletes a workout by ID.
+- `GET /exercises` 
+	Returns all exercises.
+- `GET /exercises/<id>` 
+	Returns a single exercise by ID.
+- `POST /exercises` 
+	Creates a new exercise.
+- `DELETE /exercises/<id>` 
+	Deletes an exercise by ID.
+- `POST /workouts/<workout_id>/exercises/<exercise_id>/workout_exercises` 
+	Adds an exercise to a workout with details such as reps, sets, and duration.
+
+## Test Files
+
+Test files are not included in this submission.
 
 ## Notes
 
