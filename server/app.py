@@ -45,7 +45,7 @@ def create_workout():
     data = request.get_json()
 
     try:
-        validated_data = WorkoutSchema().load(data)  #serialize incoming data into a Python dictionary and validate it.
+        validated_data = WorkoutSchema().load(data)
     except ValidationError as e:
         return make_response({"errors": e.messages}, 400)
 
@@ -60,7 +60,7 @@ def create_workout():
     except ValueError as e:
         return make_response({"message": str(e)}, 400)
 
-    response_body = WorkoutSchema().dump(new_workout)  #deserialize the new workout object to send back in the response as a JSON object
+    response_body = WorkoutSchema().dump(new_workout)
     return make_response(response_body, 201)
 
 #delete a workout
@@ -82,7 +82,7 @@ def get_exercises():
     if not exercises_list:
         return make_response({"message": "No exercises found"}, 404)
     response_body = ExerciseSchema(many=True).dump(exercises_list)
-    return make_response(response_body, 200)
+    return make_response(response_body), 200
 
 #get exercise by id
 @app.route('/exercises/<int:id>', methods=["GET"])
@@ -116,7 +116,7 @@ def create_exercise():
         db.session.commit()
     except ValueError as e:
         return make_response({"message": str(e)}, 400)
-    response_body = ExerciseSchema().dump(new_exercise)  
+    response_body = ExerciseSchema().dump(new_exercise)
     return make_response(response_body, 201)
 
 #delete an exercise
@@ -140,7 +140,7 @@ def add_exercise_to_workout(workout_id, exercise_id):
     data = request.get_json()
 
     try:
-        validated_workout_exercise = WorkoutExerciseSchema().load(data)  #.load() serializes incoming data into a Python dictionary and validates it.
+        validated_workout_exercise = WorkoutExerciseSchema().load(data)
     except ValidationError as e:
         return make_response({"errors": e.messages}, 400)
     
@@ -151,7 +151,7 @@ def add_exercise_to_workout(workout_id, exercise_id):
     db.session.add(workout_exercise)
     db.session.commit()
     
-    response_body = WorkoutExerciseSchema().dump(workout_exercise)  #deserialize the new workout exercise object to send back in the response as a JSON object.
+    response_body = WorkoutExerciseSchema().dump(workout_exercise)
     return make_response(response_body, 201)
 
 if __name__ == '__main__':
