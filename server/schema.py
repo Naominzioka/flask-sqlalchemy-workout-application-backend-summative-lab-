@@ -31,13 +31,32 @@ class WorkoutSchema(Schema):
     
 class WorkoutExerciseSchema(Schema):
     id = fields.Int(dump_only=True)
-    reps = fields.Int(allow_none=True)
-    sets = fields.Int(allow_none=True)
-    duration_seconds = fields.Int(allow_none=True)
+    reps = fields.Int(allow_none=True, load_default=None)
+    sets = fields.Int(allow_none=True, load_default=None)
+    duration_seconds = fields.Int(allow_none=True, load_default=None)
     
     @validates_schema
     def validate_schema(self, data, **kwargs):
-        if data.get('duration_seconds') is not None and data['duration_seconds'] < 0:
+        reps = data.get('reps')
+        sets = data.get('sets')
+        duration_seconds = data.get('duration_seconds')
+
+        if reps is None and duration_seconds is None:
+            raise ValidationError('Provide at least one metric: reps or duration_seconds')
+
+        if reps is not None and sets is None:
+            raise ValidationError('Sets is required when reps is provided')
+
+        if sets is not None and reps is None:
+            raise ValidationError('Reps is required when sets is provided')
+        
+        if duration_seconds is not None and duration_seconds < 0:
             raise ValidationError('Duration seconds must be a positive number')
+
+        if reps is not None and reps < 0:
+            raise ValidationError('Reps must be a positive number')
+
+        if sets is not None and sets < 0:
+            raise ValidationError('Sets must be a positive number')
     
     

@@ -90,19 +90,19 @@ class WorkoutExercise(db.Model):
     __tablename__ = 'workout_exercises'
     
     id = db.Column(db.Integer, primary_key = True)
-    reps = db.Column(db.Integer)
-    sets = db.Column(db.Integer)
-    duration_seconds = db.Column(db.Integer)
+    reps = db.Column(db.Integer, nullable=True)
+    sets = db.Column(db.Integer, nullable=True)
+    duration_seconds = db.Column(db.Integer, nullable=True)
     
-    workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'))
-    exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.id'))
+    workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'), nullable=False)
+    exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.id'), nullable=False)
     
-    @validates('duration_seconds')
-    def validate_duration_seconds(self, key, value):
+    @validates('reps', 'sets', 'duration_seconds')
+    def validate_workout_exercise_metrics(self, key, value):
         if value is None:
             return value
         if value < 0:
-            raise ValueError("Duration must be a positive number")
+            raise ValueError(f"{key.replace('_', ' ').title()} must be a positive number")
         return value
     
     workout = db.relationship('Workout', back_populates='workout_exercises')
